@@ -14,7 +14,7 @@ type (
 )
 
 func (srv *Server) setRoutes() (err error) {
-	srv.AddRoute(Route{"/ping", "GET", srv.PingHandler})
+	srv.AddRoute(Route{"/ping", "GET", srv.PingHandler, false})
 	return
 }
 
