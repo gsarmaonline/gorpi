@@ -1,4 +1,4 @@
-package ginboilerplate
+package gorestapi
 
 import (
 	"encoding/json"
@@ -9,10 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	DefaultConfigFile = "./config.json"
+)
+
 type (
 	Server struct {
-		apiEngine *gin.Engine
-		Config    *Config
+		apiEngine  *gin.Engine
+		ConfigFile string
+		Config     *Config
 	}
 
 	Config struct {
@@ -41,17 +46,13 @@ func (srv *Server) setConfig() (err error) {
 	var (
 		contB []byte
 	)
-	if contB, err = ioutil.ReadFile("./config.json"); err != nil {
+	srv.ConfigFile = DefaultConfigFile
+	if contB, err = ioutil.ReadFile(srv.ConfigFile); err != nil {
 		return
 	}
 	if err = json.Unmarshal(contB, srv.Config); err != nil {
 		return
 	}
-	return
-}
-
-func (srv *Server) setRoutes() (err error) {
-	srv.apiEngine.GET("/ping", srv.PingHandler)
 	return
 }
 

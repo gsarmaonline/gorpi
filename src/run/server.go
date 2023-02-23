@@ -4,16 +4,16 @@ import (
 	"log"
 	"os"
 
-	ginboilerplate "github.com/gauravsarma1992/ginboilerplate"
+	gorestapi "github.com/gauravsarma1992/gorestapi"
 )
 
 func main() {
 	var (
-		svr *ginboilerplate.Server
+		svr *gorestapi.Server
 		err error
 	)
 
-	if svr, err = ginboilerplate.New(); err != nil {
+	if svr, err = gorestapi.New(); err != nil {
 		log.Println(err)
 		os.Exit(-1)
 	}
