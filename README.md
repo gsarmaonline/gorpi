@@ -4,7 +4,7 @@
 
 To run the `go-rest-api` server
 
-```bash
+```golang
 package main
 
 import (
