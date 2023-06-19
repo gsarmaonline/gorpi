@@ -168,8 +168,23 @@ func (g *Generator) CreateHandler(c *gin.Context) {
 }
 
 func (g *Generator) ShowHandler(c *gin.Context) {
+	var (
+		err      error
+		resource *ResourceInfo
+		result   []godblResource.Resource
+	)
+	if resource, err = g.GetResource(c); err != nil {
+		ResourceNotFoundHandler(c, "")
+		return
+	}
+	resourceId := c.Param("id")
+	resource.DecodedResource.Attributes["_id"] = resourceId
+	if result, err = g.db.FindMany(resource.DecodedResource); err != nil {
+		return
+	}
 	c.JSON(200, gin.H{
 		"message": "success",
+		"result":  result,
 	})
 }
 

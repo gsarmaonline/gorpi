@@ -4,6 +4,8 @@ go 1.20
 
 replace github.com/gauravsarma1992/godbl => /Users/gsarma/Work/github-projects/godbl
 
+replace github.com/gauravsarma1992/gostructs => /Users/gsarma/Work/github-projects/gostructs
+
 require (
 	github.com/gauravsarma1992/godbl v0.0.0-20230619034759-bc1bdc798021
 	github.com/gauravsarma1992/gostructs v0.0.0-20230616172933-f3fbeecd7e4b

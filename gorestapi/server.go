@@ -44,6 +44,7 @@ type (
 )
 
 func New(config *Config) (srv *Server, err error) {
+	gin.SetMode(gin.ReleaseMode)
 	srv = &Server{
 		apiEngine: gin.Default(),
 		Config:    config,
