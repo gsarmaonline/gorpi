@@ -1,10 +1,13 @@
 package gorestapi
 
 import (
+	"context"
+	"errors"
 	"fmt"
-	"log"
 	"strings"
 
+	godblMongo "github.com/gauravsarma1992/godbl/godbl/adapters/mongo"
+	godblResource "github.com/gauravsarma1992/godbl/godbl/resource"
 	"github.com/gauravsarma1992/gostructs"
 	"github.com/gin-gonic/gin"
 )
@@ -16,8 +19,13 @@ const (
 type (
 	Generator struct {
 		srv       *Server
+		db        godblResource.Db
 		config    *GeneratorConfig
-		Resources map[string]*gostructs.DecodedResult
+		Resources map[string]*ResourceInfo
+	}
+	ResourceInfo struct {
+		Orig            interface{}
+		DecodedResource *gostructs.DecodedResult
 	}
 	GeneratorConfig struct {
 		ApiPrefix string
@@ -28,11 +36,25 @@ func NewGenerator(srv *Server, config *GeneratorConfig) (g *Generator, err error
 	g = &Generator{
 		srv:       srv,
 		config:    config,
-		Resources: make(map[string]*gostructs.DecodedResult),
+		Resources: make(map[string]*ResourceInfo),
 	}
 	if err = g.updateConfig(); err != nil {
 		return
 	}
+	if err = g.updateDbConfig(); err != nil {
+		return
+	}
+	return
+}
+
+func (g *Generator) updateDbConfig() (err error) {
+	var (
+		mongodb *godblMongo.MongoDb
+	)
+	if mongodb, err = godblMongo.NewMongoDb(context.TODO(), nil); err != nil {
+		return
+	}
+	g.db = godblResource.Db(mongodb)
 	return
 }
 
@@ -49,11 +71,17 @@ func (g *Generator) updateConfig() (err error) {
 func (g *Generator) Generate(resource interface{}) (err error) {
 	var (
 		decodedResult *gostructs.DecodedResult
+		resourceInfo  *ResourceInfo
 	)
 	if decodedResult, err = g.translate(resource); err != nil {
 		return
 	}
-	g.Resources[decodedResult.Name] = decodedResult
+	resourceInfo = &ResourceInfo{
+		Orig:            resource,
+		DecodedResource: decodedResult,
+	}
+	g.Resources[decodedResult.Name] = resourceInfo
+
 	if err = g.SetupRoutes(decodedResult); err != nil {
 		return
 	}
@@ -71,22 +99,87 @@ func (g *Generator) translate(resource interface{}) (result *gostructs.DecodedRe
 	return
 }
 
-func (g *Generator) getResourceAndActionFromUrl(c *gin.Context) (resourceName string, action string) {
+func (g *Generator) getResourceName(c *gin.Context) (resourceName string) {
 	url := strings.Replace(c.Request.URL.Path, g.config.ApiPrefix, "", 1)
 	url = strings.Trim(url, "/")
 	spUrl := strings.Split(url, "/")
 	resourceName = spUrl[0]
-	action = c.Request.Method
+	return
+}
+
+func (g *Generator) GetResource(c *gin.Context) (resourceInfo *ResourceInfo, err error) {
+	resourceName := g.getResourceName(c)
+	resourceInfo = &ResourceInfo{}
+	isPresent := true
+
+	if resourceInfo, isPresent = g.Resources[resourceName]; isPresent == false {
+		err = errors.New("Resource not found")
+		return
+	}
 	return
 }
 
 func (g *Generator) RootHandler(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "success",
+	})
+}
+
+func (g *Generator) IndexHandler(c *gin.Context) {
 	var (
-		resourceName string
-		actionType   string
+		err      error
+		resource *ResourceInfo
+		result   []godblResource.Resource
 	)
-	resourceName, actionType = g.getResourceAndActionFromUrl(c)
-	log.Println(resourceName, actionType)
+	if resource, err = g.GetResource(c); err != nil {
+		ResourceNotFoundHandler(c, "")
+		return
+	}
+	if result, err = g.db.FindMany(resource.DecodedResource); err != nil {
+		return
+	}
+	c.JSON(200, gin.H{
+		"message": "success",
+		"result":  result,
+	})
+}
+
+func (g *Generator) CreateHandler(c *gin.Context) {
+	var (
+		err      error
+		resource *ResourceInfo
+		result   godblResource.Resource
+	)
+	if resource, err = g.GetResource(c); err != nil {
+		ResourceNotFoundHandler(c, "")
+		return
+	}
+	if err = c.ShouldBindJSON(&resource.DecodedResource.Attributes); err != nil {
+		RequestBodyClientErrorHandler(c, err)
+		return
+	}
+	if result, err = g.db.InsertOne(resource.DecodedResource); err != nil {
+		return
+	}
+	c.JSON(200, gin.H{
+		"message": "success",
+		"result":  result,
+	})
+}
+
+func (g *Generator) ShowHandler(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "success",
+	})
+}
+
+func (g *Generator) UpdateHandler(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "success",
+	})
+}
+
+func (g *Generator) DeleteHandler(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "success",
 	})
@@ -97,10 +190,10 @@ func (g *Generator) SetupRoutes(decodedResource *gostructs.DecodedResult) (err e
 		baseRoute string
 	)
 	baseRoute = fmt.Sprintf("%s/%s", g.config.ApiPrefix, decodedResource.Name)
-	g.srv.AddRoute(Route{baseRoute, "GET", g.RootHandler, false})             // Index
-	g.srv.AddRoute(Route{baseRoute + "/:id", "GET", g.RootHandler, false})    // Show
-	g.srv.AddRoute(Route{baseRoute, "POST", g.RootHandler, false})            // Create
-	g.srv.AddRoute(Route{baseRoute + "/:id", "PUT", g.RootHandler, false})    // Update
-	g.srv.AddRoute(Route{baseRoute + "/:id", "DELETE", g.RootHandler, false}) // Delete
+	g.srv.AddRoute(Route{baseRoute, "GET", g.IndexHandler, false})              // Index
+	g.srv.AddRoute(Route{baseRoute + "/:id", "GET", g.ShowHandler, false})      // Show
+	g.srv.AddRoute(Route{baseRoute, "POST", g.CreateHandler, false})            // Create
+	g.srv.AddRoute(Route{baseRoute + "/:id", "PUT", g.UpdateHandler, false})    // Update
+	g.srv.AddRoute(Route{baseRoute + "/:id", "DELETE", g.DeleteHandler, false}) // Delete
 	return
 }

@@ -1,6 +1,10 @@
 package gorestapi
 
 import (
+	"bytes"
+	"io"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"testing"
 
@@ -23,9 +27,10 @@ func GetTestGenerator() (g *Generator) {
 	return
 }
 
-func FireQuery(url string, method string, payload interface{}) (resp *http.Response, err error) {
+func FireQuery(url string, method string, payload io.Reader) (resp *http.Response, err error) {
 	client := &http.Client{}
-	req, _ := http.NewRequest(method, url, nil)
+	req, _ := http.NewRequest(method, url, payload)
+	req.Header.Set("Content-Type", "application/json")
 	resp, err = client.Do(req)
 	return
 }
@@ -44,8 +49,8 @@ func TestGeneratorGenerate(t *testing.T) {
 	g.srv.Cancel()
 
 	assert.NotNil(t, g.Resources["test_a"])
-	assert.Equal(t, g.Resources["test_a"].Attributes["a"], 3)
-	assert.Equal(t, g.Resources["test_a"].Attributes["b"], "hello")
+	assert.Equal(t, g.Resources["test_a"].DecodedResource.Attributes["a"], 3)
+	assert.Equal(t, g.Resources["test_a"].DecodedResource.Attributes["b"], "hello")
 	assert.Equal(t, resp.StatusCode, 200)
 }
 
@@ -54,6 +59,20 @@ func TestGeneratorIndex(t *testing.T) {
 	go g.srv.Run()
 
 	resp, _ := FireQuery("http://localhost:9091/api/autogen/test_a", "GET", nil)
+	g.srv.Cancel()
+
+	jsonB, _ := ioutil.ReadAll(resp.Body)
+	log.Println(string(jsonB))
+
+	assert.Equal(t, resp.StatusCode, 200)
+}
+
+func TestGeneratorCreate(t *testing.T) {
+	g := GetTestGenerator()
+	go g.srv.Run()
+	reqBody := []byte(`{"a": 5, "b": "hello world"}`)
+	payloadB := bytes.NewBuffer(reqBody)
+	resp, _ := FireQuery("http://localhost:9091/api/autogen/test_a", "POST", payloadB)
 	g.srv.Cancel()
 
 	assert.Equal(t, resp.StatusCode, 200)
