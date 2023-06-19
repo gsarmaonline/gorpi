@@ -42,22 +42,22 @@ func successHandler(c *gin.Context) {
 
 func main() {
 	var (
-		svr *gorestapi.Server
+		srv *gorestapi.Server
 		err error
 	)
 
-	if svr, err = gorestapi.New(nil); err != nil {
+	if srv, err = gorestapi.New(nil); err != nil {
 		log.Println(err)
 		os.Exit(-1)
 	}
 
-	svr.AddRoute(gorestapi.Route{"/api/success", "GET", successHandler, false})
-	svr.AddRoute(gorestapi.Route{"/api/uncertain", "GET", uncertainHandler, false})
-	svr.AddRoute(gorestapi.Route{"/api/failure", "GET", failureHandler, false})
+	srv.AddRoute(gorestapi.Route{"/api/success", "GET", successHandler, false})
+	srv.AddRoute(gorestapi.Route{"/api/uncertain", "GET", uncertainHandler, false})
+	srv.AddRoute(gorestapi.Route{"/api/failure", "GET", failureHandler, false})
 
-	if err = svr.Run(); err != nil {
+	if err = srv.Run(); err != nil {
 		log.Println(err)
 		os.Exit(-1)
 	}
-	log.Println(svr)
+	log.Println(srv)
 }
