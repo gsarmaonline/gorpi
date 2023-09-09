@@ -18,6 +18,8 @@ import (
 var (
 	ConfigFolderPath  = os.Getenv("CONFIG_FOLDER")
 	DefaultConfigFile = ConfigFolderPath + "/config.json"
+	DefaultHost       = "127.0.0.1"
+	DefaulPort        = "9095"
 )
 
 type (
@@ -72,6 +74,15 @@ func (srv *Server) setConfig() (err error) {
 	)
 	srv.Config = &Config{}
 	srv.ConfigFile = DefaultConfigFile
+
+	// If the default config file doesn't exist, fallback to default constants
+	if _, err = os.Stat(srv.ConfigFile); err != nil {
+		srv.Config.Server.Host = DefaultHost
+		srv.Config.Server.Port = DefaulPort
+		err = nil
+		return
+	}
+
 	if contB, err = ioutil.ReadFile(srv.ConfigFile); err != nil {
 		return
 	}
