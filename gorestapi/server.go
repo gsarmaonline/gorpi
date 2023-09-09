@@ -30,7 +30,6 @@ type (
 
 		ConfigFile string
 		Config     *Config
-		Generator  *Generator
 
 		closeCh chan bool
 	}
@@ -57,9 +56,6 @@ func New(config *Config) (srv *Server, err error) {
 		if err = srv.setConfig(); err != nil {
 			return
 		}
-	}
-	if srv.Generator, err = NewGenerator(srv, nil); err != nil {
-		return
 	}
 	if err = srv.setHttpServer(); err != nil {
 		return
@@ -128,7 +124,7 @@ func (srv *Server) Shutdown() (err error) {
 }
 
 func (srv *Server) Run() (err error) {
-	log.Println("Running REST Server")
+	log.Println("Running REST Server on", srv.Config.Server.Host, srv.Config.Server.Port)
 
 	go func() {
 		if err := srv.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
