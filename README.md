@@ -1,4 +1,15 @@
-# Go Rest APIs
+# Go Rest APIs - Gorpi
+
+Go Rest APIs is a thin layer built on top of the Gin framework.
+The framework decides to provide few helpers and conventions which
+make it very straightforward to establish simple CRUD APIs.
+
+## Routing
+Rails, the Ruby framework provides a method `resources` which defines
+the RESTful routes by default for the mentioned resource.
+It allows proper nesting of resources depending on where they are configured.
+Though slightly laborious to get to that level of efficiency in Go, the API
+layer will try to take the Rails resources as the guiding factor.
 
 ## Usage
 

@@ -5,20 +5,40 @@ import (
 )
 
 type (
+	Authentication struct{}
+
 	Route struct {
-		RequestURI         string
-		RequestMethod      string
-		Handler            gin.HandlerFunc
-		ShouldAuthenticate bool
+		RequestURI     string
+		RequestMethod  string
+		Handler        gin.HandlerFunc
+		Authentication *Authentication
+
+		ChildRoutes []*Route
+		ParentRoute *Route
 	}
 )
 
+func (route *Route) GetRequestUri() (requestUri string) {
+	requestUri = route.RequestURI
+	return
+}
+
+func (route *Route) GetAuthentication() (auth *Authentication) {
+	auth = route.Authentication
+	return
+}
+
 func (srv *Server) setRoutes() (err error) {
-	srv.AddRoute(Route{"/ping", "GET", srv.PingHandler, false})
+	srv.AddRoute(Route{
+		RequestURI:     "/ping",
+		RequestMethod:  "GET",
+		Handler:        srv.PingHandler,
+		Authentication: nil,
+	})
 	return
 }
 
 func (srv *Server) AddRoute(route Route) (err error) {
-	srv.apiEngine.Handle(route.RequestMethod, route.RequestURI, route.Handler)
+	srv.apiEngine.Handle(route.RequestMethod, route.GetRequestUri(), route.Handler)
 	return
 }

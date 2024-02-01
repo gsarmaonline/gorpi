@@ -51,6 +51,13 @@ func New(config *Config) (srv *Server, err error) {
 		Config:    config,
 		closeCh:   make(chan bool),
 	}
+	if err = srv.Setup(); err != nil {
+		return
+	}
+	return
+}
+
+func (srv *Server) Setup() (err error) {
 	if srv.ctx, srv.Cancel = context.WithCancel(context.Background()); err != nil {
 		return
 	}
@@ -123,7 +130,6 @@ func (srv *Server) handleShutdown() (err error) {
 			return
 		}
 	}
-	return
 }
 
 func (srv *Server) Shutdown() (err error) {
