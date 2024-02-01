@@ -28,6 +28,12 @@ func (route *Route) GetAuthentication() (auth *Authentication) {
 	return
 }
 
+func (srv *Server) PingHandler(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "pong",
+	})
+}
+
 func (srv *Server) setRoutes() (err error) {
 	srv.AddRoute(Route{
 		RequestURI:     "/ping",

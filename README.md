@@ -1,6 +1,6 @@
 # Go Rest APIs - Gorpi
 
-Go Rest APIs is a thin layer built on top of the Gin framework.
+Gorpi is a thin layer built on top of the Gin framework.
 The framework decides to provide few helpers and conventions which
 make it very straightforward to establish simple CRUD APIs.
 
@@ -10,6 +10,21 @@ the RESTful routes by default for the mentioned resource.
 It allows proper nesting of resources depending on where they are configured.
 Though slightly laborious to get to that level of efficiency in Go, the API
 layer will try to take the Rails resources as the guiding factor.
+```
+	Route struct {
+		RequestURI     string
+		RequestMethod  string
+		Handler        gin.HandlerFunc
+		Authentication *Authentication
+
+		ChildRoutes []*Route
+		ParentRoute *Route
+	}
+```
+
+## Database connections
+Gorpi provides a database library on top of gorm to provide easy access
+to an ORM via the server object.
 
 ## Usage
 
@@ -27,20 +42,20 @@ import (
 
 func main() {
 	var (
-		svr *gorestapi.Server
+		srv *gorestapi.Server
 		err error
 	)
 
-	if svr, err = gorestapi.New(); err != nil {
+	if srv, err = gorestapi.New(); err != nil {
 		log.Println(err)
 		os.Exit(-1)
 	}
 
-	if err = svr.Run(); err != nil {
+	if err = srv.Run(); err != nil {
 		log.Println(err)
 		os.Exit(-1)
 	}
-	log.Println(svr)
+	log.Println(srv)
 }
 ```
 

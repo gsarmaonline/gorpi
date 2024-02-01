@@ -13,6 +13,7 @@ import (
 	"syscall"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 var (
@@ -30,6 +31,8 @@ type (
 		server    *http.Server
 		apiEngine *gin.Engine
 
+		DB *gorm.DB
+
 		ConfigFile string
 		Config     *Config
 
@@ -41,6 +44,13 @@ type (
 			Host string `json:"host"`
 			Port string `json:"port"`
 		} `json:"server"`
+		Database struct {
+			Username string `json:"username"`
+			Password string `json:"password"`
+			DbName   string `json:"db_name"`
+			Host     string `json:"host"`
+			Port     string `json:"port"`
+		}
 	}
 )
 
@@ -72,6 +82,9 @@ func (srv *Server) Setup() (err error) {
 	if err = srv.setRoutes(); err != nil {
 		return
 	}
+	if srv.DB, err = NewDB(srv.Config); err != nil {
+		return
+	}
 	return
 }
 
@@ -97,12 +110,6 @@ func (srv *Server) setConfig() (err error) {
 		return
 	}
 	return
-}
-
-func (srv *Server) PingHandler(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "pong",
-	})
 }
 
 func (srv *Server) setHttpServer() (err error) {
