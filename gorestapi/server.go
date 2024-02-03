@@ -13,7 +13,6 @@ import (
 	"syscall"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 var (
@@ -31,7 +30,7 @@ type (
 		server    *http.Server
 		apiEngine *gin.Engine
 
-		DB *gorm.DB
+		DB *DB
 
 		ConfigFile string
 		Config     *Config
