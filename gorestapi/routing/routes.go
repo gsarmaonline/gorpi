@@ -1,6 +1,9 @@
 package routing
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,13 +30,13 @@ func NewRouteManager(apiEngine *gin.Engine) (rm *RouteManager, err error) {
 	rm = &RouteManager{
 		apiEngine: apiEngine,
 	}
-	rm.trie = NewTrie(rm.RootHandler())
+	rm.trie = NewTrie(rm.DefaultRootRoute())
 	return
 }
 
 func (rm *RouteManager) DefaultRootRoute() (route *Route) {
 	route = &Route{
-		RequestURI:    "/",
+		RequestURI:    "",
 		RequestMethod: "*",
 		Handler:       rm.RootHandler,
 	}
@@ -45,10 +48,28 @@ func (rm *RouteManager) RootHandler(c *gin.Context) {
 }
 
 func (rm *RouteManager) AddRoutes(route *Route) (err error) {
-	rm.findLongestPrefix(route)
+	if _, err = rm.trie.AddPath(route); err != nil {
+		return
+	}
 	return
 }
 
-func (rm *RouteManager) findLongestPrefix(route *Route) (nearestRoute *Route, err error) {
+func (rm *RouteManager) GetRoute(path string) (route *Route, err error) {
+	var (
+		pathNode *Node
+	)
+	if pathNode, err = rm.trie.GetNode(path); err != nil {
+		return
+	}
+	if pathNode.Route == nil {
+		err = errors.New("Route not found for path" + path)
+		return
+	}
+	route = pathNode.Route
+	return
+}
+
+func (route *Route) GetName() (name string) {
+	name = fmt.Sprintf("%s-%s", route.RequestMethod, route.RequestURI)
 	return
 }
