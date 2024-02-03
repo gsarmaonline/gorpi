@@ -115,7 +115,14 @@ func (node *Node) findOrCreateNode(pathElem string) (pathNode *Node) {
 func (node *Node) findNode(pathElem string) (pathNode *Node, err error) {
 	isPresent := false
 	if pathNode, isPresent = node.prefixMap[pathElem]; !isPresent {
+		for k, v := range node.prefixMap {
+			if strings.Split(k, "")[0] == ":" {
+				pathNode = v
+				return
+			}
+		}
 		err = errors.New("Node not present at path: " + pathElem)
+		return
 	}
 	return
 }

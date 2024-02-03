@@ -80,4 +80,8 @@ func TestRouteManagerGetRoutes(t *testing.T) {
 	assert.NotEqual(t, err, nil)
 	fmt.Println(route)
 
+	route, err = rm.GetRoute("POST-/hello/21")
+	assert.Equal(t, err, nil)
+	assert.Equal(t, route.RequestURI, "/hello/:id")
+
 }
