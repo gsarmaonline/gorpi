@@ -30,6 +30,7 @@ func NewRouteManager(apiEngine *gin.Engine) (rm *RouteManager, err error) {
 	rm = &RouteManager{
 		apiEngine: apiEngine,
 	}
+	rm.apiEngine.GET("/", rm.DefaultRootRoute().Handler)
 	rm.trie = NewTrie(rm.DefaultRootRoute())
 	return
 }
@@ -44,6 +45,9 @@ func (rm *RouteManager) DefaultRootRoute() (route *Route) {
 }
 
 func (rm *RouteManager) RootHandler(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "hello",
+	})
 	return
 }
 

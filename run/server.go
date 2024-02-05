@@ -43,17 +43,28 @@ func successHandler(c *gin.Context) {
 func main() {
 	var (
 		srv *gorestapi.Server
+		cfg *gorestapi.Config
 		err error
 	)
 
-	if srv, err = gorestapi.New(nil); err != nil {
+	cfg = &gorestapi.Config{}
+
+	cfg.Server.Host = "127.0.0.1"
+	cfg.Server.Port = "8090"
+	cfg.Database.Username = "root"
+	cfg.Database.Password = ""
+	cfg.Database.DbName = "gorpi"
+	cfg.Database.Host = "127.0.0.1"
+	cfg.Database.Port = "3306"
+
+	if srv, err = gorestapi.New(cfg); err != nil {
 		log.Println(err)
 		os.Exit(-1)
 	}
 
-	srv.AddRoute(gorestapi.Route{"/api/success", "GET", successHandler, false})
-	srv.AddRoute(gorestapi.Route{"/api/uncertain", "GET", uncertainHandler, false})
-	srv.AddRoute(gorestapi.Route{"/api/failure", "GET", failureHandler, false})
+	//srv.AddRoute(gorestapi.Route{"/api/success", "GET", successHandler, false})
+	//srv.AddRoute(gorestapi.Route{"/api/uncertain", "GET", uncertainHandler, false})
+	//srv.AddRoute(gorestapi.Route{"/api/failure", "GET", failureHandler, false})
 
 	if err = srv.Run(); err != nil {
 		log.Println(err)
