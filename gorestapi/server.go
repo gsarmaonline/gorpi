@@ -12,8 +12,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gauravsarma1992/go-rest-api/gorestapi/routing"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 var (
@@ -31,7 +31,8 @@ type (
 		server    *http.Server
 		apiEngine *gin.Engine
 
-		DB *gorm.DB
+		RouteManager *routing.RouteManager
+		DB           *DB
 
 		ConfigFile string
 		Config     *Config
@@ -76,10 +77,10 @@ func (srv *Server) Setup() (err error) {
 			return
 		}
 	}
-	if err = srv.setHttpServer(); err != nil {
+	if err = srv.setRoutes(); err != nil {
 		return
 	}
-	if err = srv.setRoutes(); err != nil {
+	if err = srv.setHttpServer(); err != nil {
 		return
 	}
 	if srv.DB, err = NewDB(srv.Config); err != nil {

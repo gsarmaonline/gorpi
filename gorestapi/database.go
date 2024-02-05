@@ -7,7 +7,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewDB(config *Config) (db *gorm.DB, err error) {
+type (
+	DB struct {
+		orm *gorm.DB
+	}
+)
+
+func NewDB(config *Config) (db *DB, err error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		config.Database.Username,
 		config.Database.Password,
@@ -15,6 +21,10 @@ func NewDB(config *Config) (db *gorm.DB, err error) {
 		config.Database.Port,
 		config.Database.DbName,
 	)
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	orm, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	db = &DB{
+		orm: orm,
+	}
 	return
 }

@@ -2,5 +2,12 @@
   "server": {
     "host": "127.0.0.1",
     "port": "9091"
+  },
+  "database": {
+    "username": "root",
+    "password": "",
+    "db_name": "gorpi",
+    "host": "127.0.0.1",
+    "port": 3306
   }
 }
