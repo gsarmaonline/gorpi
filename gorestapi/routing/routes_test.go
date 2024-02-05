@@ -32,7 +32,7 @@ func AddDummyRoutes(rm *RouteManager) {
 		},
 		&Route{
 			RequestURI:    "/hello/:id",
-			RequestMethod: "POST",
+			RequestMethod: "GET",
 			Handler:       DummyHandler,
 		},
 		&Route{
@@ -80,10 +80,10 @@ func TestRouteManagerGetRoutes(t *testing.T) {
 	assert.NotEqual(t, err, nil)
 	fmt.Println(route)
 
-	route, err = rm.GetRoute("POST-/hello/21")
+	route, err = rm.GetRoute("GET-/hello/21")
 	assert.Equal(t, err, nil)
 	assert.Equal(t, route.RequestURI, "/hello/:id")
-	assert.Equal(t, route.RequestMethod, "POST")
+	assert.Equal(t, route.RequestMethod, "GET")
 
 	route, err = rm.GetRoute("POST-/hello/world")
 	assert.Equal(t, err, nil)
