@@ -37,8 +37,8 @@ func NewTrie(rootRoute *Route) (tr *Trie) {
 }
 
 func (tr *Trie) String() (content string) {
-	content = "hello"
-	tr.traverse(tr.rootNode, "", []string{})
+	routes := tr.traverse(tr.rootNode, "", []string{})
+	content = strings.Join(routes, "\n")
 	return
 }
 
@@ -86,6 +86,7 @@ func (tr *Trie) AddPath(route *Route) (node *Node, err error) {
 
 func (tr *Trie) GetNode(path string) (pathNode *Node, err error) {
 	spPath := tr.translatePathFromStr(path)
+	fmt.Println(spPath)
 	currNode := tr.rootNode
 	for _, pathElem := range spPath {
 		if pathNode, err = currNode.findNode(pathElem); err != nil {

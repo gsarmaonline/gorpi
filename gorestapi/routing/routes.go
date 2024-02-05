@@ -3,6 +3,7 @@ package routing
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,13 +17,9 @@ type (
 	}
 
 	Route struct {
-		RequestURI     string
-		RequestMethod  string
-		Handler        gin.HandlerFunc
-		Authentication *Authentication
-
-		ChildRoutes []*Route
-		ParentRoute *Route
+		RequestURI    string
+		RequestMethod string
+		Handler       gin.HandlerFunc
 	}
 )
 
@@ -30,14 +27,17 @@ func NewRouteManager(apiEngine *gin.Engine) (rm *RouteManager, err error) {
 	rm = &RouteManager{
 		apiEngine: apiEngine,
 	}
-	rm.apiEngine.GET("/", rm.DefaultRootRoute().Handler)
+	// The noroute handler handles the routes for routes which are
+	// not defined. Since we are not defining any routes on the
+	// gin context, everything will be handled by the root handler
+	rm.apiEngine.NoRoute(rm.DefaultRootRoute().Handler)
 	rm.trie = NewTrie(rm.DefaultRootRoute())
 	return
 }
 
 func (rm *RouteManager) DefaultRootRoute() (route *Route) {
 	route = &Route{
-		RequestURI:    "",
+		RequestURI:    "/",
 		RequestMethod: "*",
 		Handler:       rm.RootHandler,
 	}
@@ -45,7 +45,22 @@ func (rm *RouteManager) DefaultRootRoute() (route *Route) {
 }
 
 func (rm *RouteManager) RootHandler(c *gin.Context) {
+	var (
+		route *Route
+		err   error
+	)
+	path := fmt.Sprintf("%s-%s", c.Request.Method, c.Request.RequestURI)
+	if route, err = rm.GetRoute(path); err != nil {
+		log.Println(err, "Printing all routes: ", rm.trie.String())
+		c.JSON(400, gin.H{
+			"request": path,
+			"message": "Route not found - " + err.Error(),
+		})
+		return
+	}
 	c.JSON(200, gin.H{
+		"route":   route.GetName(),
+		"request": path,
 		"message": "hello",
 	})
 	return
@@ -55,6 +70,7 @@ func (rm *RouteManager) AddRoutes(route *Route) (err error) {
 	if _, err = rm.trie.AddPath(route); err != nil {
 		return
 	}
+	log.Println("Adding route path", route.GetName())
 	return
 }
 

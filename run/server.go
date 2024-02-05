@@ -5,6 +5,7 @@ import (
 	"os"
 
 	gorestapi "github.com/gauravsarma1992/go-rest-api/gorestapi"
+	"github.com/gauravsarma1992/go-rest-api/gorestapi/routing"
 	"github.com/gin-gonic/gin"
 )
 
@@ -40,6 +41,41 @@ func successHandler(c *gin.Context) {
 	return
 }
 
+func addDummyRoutes(rm *routing.RouteManager) {
+
+	routes := []*routing.Route{
+		&routing.Route{
+			RequestURI:    "/hello",
+			RequestMethod: "POST",
+			Handler:       successHandler,
+		},
+		&routing.Route{
+			RequestURI:    "/hello/world",
+			RequestMethod: "POST",
+			Handler:       successHandler,
+		},
+		&routing.Route{
+			RequestURI:    "/hello/again",
+			RequestMethod: "POST",
+			Handler:       successHandler,
+		},
+		&routing.Route{
+			RequestURI:    "/hello/:id",
+			RequestMethod: "GET",
+			Handler:       successHandler,
+		},
+		&routing.Route{
+			RequestURI:    "/hello/:id/again/to/you",
+			RequestMethod: "POST",
+			Handler:       successHandler,
+		},
+	}
+
+	for _, route := range routes {
+		rm.AddRoutes(route)
+	}
+}
+
 func main() {
 	var (
 		srv *gorestapi.Server
@@ -62,9 +98,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	//srv.AddRoute(gorestapi.Route{"/api/success", "GET", successHandler, false})
-	//srv.AddRoute(gorestapi.Route{"/api/uncertain", "GET", uncertainHandler, false})
-	//srv.AddRoute(gorestapi.Route{"/api/failure", "GET", failureHandler, false})
+	addDummyRoutes(srv.RouteManager)
 
 	if err = srv.Run(); err != nil {
 		log.Println(err)
