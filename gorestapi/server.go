@@ -12,6 +12,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gauravsarma1992/go-rest-api/gorestapi/middlewares"
 	"github.com/gauravsarma1992/go-rest-api/gorestapi/routing"
 	"github.com/gin-gonic/gin"
 )
@@ -31,8 +32,9 @@ type (
 		server    *http.Server
 		apiEngine *gin.Engine
 
-		RouteManager *routing.RouteManager
-		DB           *DB
+		RouteManager    *routing.RouteManager
+		MiddlewareStack *middlewares.MiddlewareStack
+		DB              *DB
 
 		ConfigFile string
 		Config     *Config
@@ -58,9 +60,10 @@ type (
 func New(config *Config) (srv *Server, err error) {
 	gin.SetMode(gin.ReleaseMode)
 	srv = &Server{
-		apiEngine: gin.Default(),
-		Config:    config,
-		closeCh:   make(chan bool),
+		apiEngine:       gin.Default(),
+		Config:          config,
+		MiddlewareStack: middlewares.NewMiddlewareStack(),
+		closeCh:         make(chan bool),
 	}
 	if err = srv.Setup(); err != nil {
 		return

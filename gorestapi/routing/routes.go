@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/gauravsarma1992/go-rest-api/gorestapi/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,8 +13,9 @@ type (
 	Authentication struct{}
 
 	RouteManager struct {
-		apiEngine *gin.Engine
-		trie      *Trie
+		apiEngine      *gin.Engine
+		trie           *Trie
+		middlwareStack *middlewares.MiddlewareStack
 	}
 
 	Route struct {
@@ -23,9 +25,10 @@ type (
 	}
 )
 
-func NewRouteManager(apiEngine *gin.Engine) (rm *RouteManager, err error) {
+func NewRouteManager(apiEngine *gin.Engine, ms *middlewares.MiddlewareStack) (rm *RouteManager, err error) {
 	rm = &RouteManager{
-		apiEngine: apiEngine,
+		apiEngine:      apiEngine,
+		middlwareStack: ms,
 	}
 	// The noroute handler handles the routes for routes which are
 	// not defined. Since we are not defining any routes on the

@@ -49,7 +49,7 @@ func AddDummyRoutes(rm *RouteManager) {
 
 func TestRouteManagerInitialization(t *testing.T) {
 	testApiEngine := gin.Default()
-	rm, err := NewRouteManager(testApiEngine)
+	rm, err := NewRouteManager(testApiEngine, nil)
 
 	assert.NotEqual(t, rm, nil)
 	assert.Equal(t, err, nil)
@@ -57,7 +57,7 @@ func TestRouteManagerInitialization(t *testing.T) {
 
 func TestRouteManagerAddRoutes(t *testing.T) {
 	testApiEngine := gin.Default()
-	rm, _ := NewRouteManager(testApiEngine)
+	rm, _ := NewRouteManager(testApiEngine, nil)
 
 	AddDummyRoutes(rm)
 	totalRoutes := len(rm.trie.traverse(rm.trie.rootNode, "", []string{}))
@@ -68,7 +68,7 @@ func TestRouteManagerAddRoutes(t *testing.T) {
 
 func TestRouteManagerGetRoutes(t *testing.T) {
 	testApiEngine := gin.Default()
-	rm, _ := NewRouteManager(testApiEngine)
+	rm, _ := NewRouteManager(testApiEngine, nil)
 
 	AddDummyRoutes(rm)
 
