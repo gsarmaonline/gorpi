@@ -52,6 +52,7 @@ func (rm *RouteManager) RootHandler(c *gin.Context) {
 		route *Route
 		err   error
 	)
+
 	path := fmt.Sprintf("%s-%s", c.Request.Method, c.Request.RequestURI)
 	if route, err = rm.GetRoute(path); err != nil {
 		log.Println(err, "Printing all routes: ", rm.trie.String())
