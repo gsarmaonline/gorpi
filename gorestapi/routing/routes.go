@@ -67,6 +67,8 @@ func (rm *RouteManager) RootHandler(c *gin.Context) {
 		})
 		return
 	}
+
+	rm.middlwareStack.Exec(c, route.Handler)
 	c.JSON(200, gin.H{
 		"route":   route.GetName(),
 		"request": path,
