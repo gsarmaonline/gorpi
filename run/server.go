@@ -36,10 +36,12 @@ func failureHandler(req *api.Request, resp *api.Response) (err error) {
 }
 
 func successHandler(req *api.Request, resp *api.Response) (err error) {
+	type User struct {
+		Name string
+		Age  int
+	}
 	log.Println("In success handler")
-	req.GinC.JSON(200, gin.H{
-		"message": "success",
-	})
+	resp.Write(User{"Gary", 30})
 	return
 }
 

@@ -1,6 +1,8 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 type (
 	Request struct {
@@ -9,7 +11,9 @@ type (
 		RequestMethod string
 	}
 	Response struct {
-		req *Request
+		req        *Request
+		StatusCode int         `json:"status_code"`
+		Body       interface{} `json:"body"`
 	}
 	ApiHandlerFunc func(*Request, *Response) error
 )
@@ -30,6 +34,9 @@ func NewResponse(req *Request) (resp *Response) {
 	return
 }
 
-func (resp *Response) Write(c *gin.Context) {
+func (resp *Response) Write(body interface{}) {
+	resp.req.GinC.JSON(200, gin.H{
+		"result": body,
+	})
 	return
 }

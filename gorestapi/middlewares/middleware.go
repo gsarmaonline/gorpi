@@ -46,10 +46,8 @@ func (ms *MiddlewareStack) Exec(c *gin.Context, handler api.ApiHandlerFunc) (err
 	tracker = NewTracker(ms, request, response, handler)
 
 	if err = tracker.Start(); err != nil {
+		fmt.Println(err)
 		return
 	}
-	fmt.Println(err)
-
-	response.Write(c)
 	return
 }
