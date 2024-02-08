@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/gauravsarma1992/go-rest-api/gorestapi/api"
 	"github.com/gauravsarma1992/go-rest-api/gorestapi/middlewares"
 	"github.com/gin-gonic/gin"
 )
@@ -21,7 +22,7 @@ type (
 	Route struct {
 		RequestURI    string
 		RequestMethod string
-		Handler       gin.HandlerFunc
+		Handler       api.ApiHandlerFunc
 	}
 )
 
@@ -33,17 +34,21 @@ func NewRouteManager(apiEngine *gin.Engine, ms *middlewares.MiddlewareStack) (rm
 	// The noroute handler handles the routes for routes which are
 	// not defined. Since we are not defining any routes on the
 	// gin context, everything will be handled by the root handler
-	rm.apiEngine.NoRoute(rm.DefaultRootRoute().Handler)
-	rm.trie = NewTrie(rm.DefaultRootRoute())
+	rm.apiEngine.NoRoute(rm.RootHandler)
+	rm.trie = NewTrie(rm.GetDefaultBaseHandler())
 	return
 }
 
-func (rm *RouteManager) DefaultRootRoute() (route *Route) {
+func (rm *RouteManager) GetDefaultBaseHandler() (route *Route) {
 	route = &Route{
 		RequestURI:    "/",
 		RequestMethod: "*",
-		Handler:       rm.RootHandler,
+		Handler:       rm.BaseHandler,
 	}
+	return
+}
+
+func (rm *RouteManager) BaseHandler(req *api.Request) (resp *api.Response, err error) {
 	return
 }
 
@@ -62,6 +67,7 @@ func (rm *RouteManager) RootHandler(c *gin.Context) {
 		})
 		return
 	}
+	rm.middlwareStack.Exec(route.Handler)
 	c.JSON(200, gin.H{
 		"route":   route.GetName(),
 		"request": path,

@@ -11,6 +11,7 @@ type (
 	Response struct {
 		req *Request
 	}
+	ApiHandlerFunc func(*Request) (*Response, error)
 )
 
 func NewRequest(c *gin.Context) (req *Request) {

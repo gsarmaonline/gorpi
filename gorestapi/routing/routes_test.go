@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/gauravsarma1992/go-rest-api/gorestapi/api"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
-func DummyHandler(c *gin.Context) {
-	fmt.Println(c)
+func DummyHandler(req *api.Request) (resp *api.Response, err error) {
+	fmt.Println(req)
 	return
 }
 
