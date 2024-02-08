@@ -1,8 +1,6 @@
 package middlewares
 
 import (
-	"container/list"
-
 	"github.com/gauravsarma1992/go-rest-api/gorestapi/api"
 	"go.uber.org/zap"
 )
@@ -22,10 +20,10 @@ func NewLoggerMiddleware() (loggerM *LoggerMiddleware) {
 	return
 }
 
-func (loggerM *LoggerMiddleware) Process(req *api.Request, lElem *list.Element) (resp *api.Response, err error) {
+func (loggerM *LoggerMiddleware) Process(req *api.Request, resp *api.Response, tr *Tracker) (err error) {
 	loggerM.logger.Info("Received request",
 		zap.String("RequestURI", req.RequestURI),
 	)
-	lElem.Next()
+	tr.Next()
 	return
 }

@@ -48,7 +48,7 @@ func (rm *RouteManager) GetDefaultBaseHandler() (route *Route) {
 	return
 }
 
-func (rm *RouteManager) BaseHandler(req *api.Request) (resp *api.Response, err error) {
+func (rm *RouteManager) BaseHandler(req *api.Request, resp *api.Response) (err error) {
 	return
 }
 
@@ -67,7 +67,6 @@ func (rm *RouteManager) RootHandler(c *gin.Context) {
 		})
 		return
 	}
-	rm.middlwareStack.Exec(route.Handler)
 	c.JSON(200, gin.H{
 		"route":   route.GetName(),
 		"request": path,
