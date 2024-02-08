@@ -86,7 +86,6 @@ func (tr *Trie) AddPath(route *Route) (node *Node, err error) {
 
 func (tr *Trie) GetNode(path string) (pathNode *Node, err error) {
 	spPath := tr.translatePathFromStr(path)
-	fmt.Println(spPath)
 	currNode := tr.rootNode
 	for _, pathElem := range spPath {
 		if pathNode, err = currNode.findNode(pathElem); err != nil {

@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/gauravsarma1992/go-rest-api/gorestapi/api"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
-func DummyHandler(c *gin.Context) {
-	fmt.Println(c)
+func DummyHandler(req *api.Request) (resp *api.Response, err error) {
+	fmt.Println(req)
 	return
 }
 
@@ -49,7 +50,7 @@ func AddDummyRoutes(rm *RouteManager) {
 
 func TestRouteManagerInitialization(t *testing.T) {
 	testApiEngine := gin.Default()
-	rm, err := NewRouteManager(testApiEngine)
+	rm, err := NewRouteManager(testApiEngine, nil)
 
 	assert.NotEqual(t, rm, nil)
 	assert.Equal(t, err, nil)
@@ -57,7 +58,7 @@ func TestRouteManagerInitialization(t *testing.T) {
 
 func TestRouteManagerAddRoutes(t *testing.T) {
 	testApiEngine := gin.Default()
-	rm, _ := NewRouteManager(testApiEngine)
+	rm, _ := NewRouteManager(testApiEngine, nil)
 
 	AddDummyRoutes(rm)
 	totalRoutes := len(rm.trie.traverse(rm.trie.rootNode, "", []string{}))
@@ -68,7 +69,7 @@ func TestRouteManagerAddRoutes(t *testing.T) {
 
 func TestRouteManagerGetRoutes(t *testing.T) {
 	testApiEngine := gin.Default()
-	rm, _ := NewRouteManager(testApiEngine)
+	rm, _ := NewRouteManager(testApiEngine, nil)
 
 	AddDummyRoutes(rm)
 

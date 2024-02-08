@@ -5,7 +5,7 @@ import (
 )
 
 func (srv *Server) setRoutes() (err error) {
-	if srv.RouteManager, err = routing.NewRouteManager(srv.apiEngine); err != nil {
+	if srv.RouteManager, err = routing.NewRouteManager(srv.apiEngine, srv.MiddlewareStack); err != nil {
 		return
 	}
 	return

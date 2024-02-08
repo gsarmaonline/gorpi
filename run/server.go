@@ -4,7 +4,8 @@ import (
 	"log"
 	"os"
 
-	gorestapi "github.com/gauravsarma1992/go-rest-api/gorestapi"
+	"github.com/gauravsarma1992/go-rest-api/gorestapi"
+	"github.com/gauravsarma1992/go-rest-api/gorestapi/api"
 	"github.com/gauravsarma1992/go-rest-api/gorestapi/routing"
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +14,7 @@ var (
 	count int
 )
 
-func uncertainHandler(c *gin.Context) {
+func uncertainHandler(req *api.Request, resp *api.Response) (err error) {
 	statusCode := 500
 	message := "failure"
 	if count%2 == 0 {
@@ -21,21 +22,22 @@ func uncertainHandler(c *gin.Context) {
 		message = "success"
 	}
 	count += 1
-	c.JSON(statusCode, gin.H{
+	req.GinC.JSON(statusCode, gin.H{
 		"message": message,
 	})
 	return
 }
 
-func failureHandler(c *gin.Context) {
-	c.JSON(500, gin.H{
+func failureHandler(req *api.Request, resp *api.Response) (err error) {
+	req.GinC.JSON(500, gin.H{
 		"message": "failed",
 	})
 	return
 }
 
-func successHandler(c *gin.Context) {
-	c.JSON(200, gin.H{
+func successHandler(req *api.Request, resp *api.Response) (err error) {
+	log.Println("In success handler")
+	req.GinC.JSON(200, gin.H{
 		"message": "success",
 	})
 	return
