@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type (
@@ -9,6 +10,8 @@ type (
 		GinC          *gin.Context
 		RequestURI    string
 		RequestMethod string
+
+		Db *gorm.DB
 	}
 	Response struct {
 		req        *Request

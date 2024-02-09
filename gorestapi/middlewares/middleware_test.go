@@ -44,7 +44,7 @@ func DummyContext() (c *gin.Context) {
 }
 
 func TestMiddlewareInit(t *testing.T) {
-	ms := NewMiddlewareStack()
+	ms := NewMiddlewareStack(nil)
 	ms.Add(&DummyMiddleware{})
 
 	c := DummyContext()
@@ -54,7 +54,7 @@ func TestMiddlewareInit(t *testing.T) {
 }
 
 func TestMiddlewareInterruption(t *testing.T) {
-	ms := NewMiddlewareStack()
+	ms := NewMiddlewareStack(nil)
 	ms.Add(&InterruptingMiddleware{})
 
 	c := DummyContext()

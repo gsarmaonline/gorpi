@@ -20,9 +20,10 @@ type (
 	}
 )
 
-func NewMiddlewareStack() (ms *MiddlewareStack) {
+func NewMiddlewareStack(db *gorm.DB) (ms *MiddlewareStack) {
 	ms = &MiddlewareStack{
 		ll: list.New(),
+		db: db,
 	}
 	ms.Add(NewLoggerMiddleware())
 	return
@@ -43,6 +44,11 @@ func (ms *MiddlewareStack) Exec(c *gin.Context, handler api.ApiHandlerFunc) (err
 
 	request = api.NewRequest(c)
 	response = api.NewResponse(request)
+
+	if ms.db != nil {
+		request.Db = ms.db
+	}
+
 	tracker = NewTracker(ms, request, response, handler)
 
 	if err = tracker.Start(); err != nil {

@@ -60,10 +60,9 @@ type (
 func New(config *Config) (srv *Server, err error) {
 	gin.SetMode(gin.ReleaseMode)
 	srv = &Server{
-		apiEngine:       gin.Default(),
-		Config:          config,
-		MiddlewareStack: middlewares.NewMiddlewareStack(),
-		closeCh:         make(chan bool),
+		apiEngine: gin.Default(),
+		Config:    config,
+		closeCh:   make(chan bool),
 	}
 	if err = srv.Setup(); err != nil {
 		return
@@ -80,13 +79,15 @@ func (srv *Server) Setup() (err error) {
 			return
 		}
 	}
+	if srv.DB, err = NewDB(srv.Config); err != nil {
+		return
+	}
+	srv.MiddlewareStack = middlewares.NewMiddlewareStack(srv.DB)
+
 	if err = srv.setRoutes(); err != nil {
 		return
 	}
 	if err = srv.setHttpServer(); err != nil {
-		return
-	}
-	if srv.DB, err = NewDB(srv.Config); err != nil {
 		return
 	}
 	return
