@@ -3,7 +3,7 @@ package middlewares
 import (
 	"container/list"
 
-	"github.com/gauravsarma1992/go-rest-api/gorestapi/api"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
 )
 
 type (

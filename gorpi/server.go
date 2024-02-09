@@ -1,4 +1,4 @@
-package gorestapi
+package gorpi
 
 import (
 	"context"
@@ -12,8 +12,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/gauravsarma1992/go-rest-api/gorestapi/middlewares"
-	"github.com/gauravsarma1992/go-rest-api/gorestapi/routing"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/middlewares"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/routing"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,7 +35,7 @@ type (
 
 		RouteManager    *routing.RouteManager
 		MiddlewareStack *middlewares.MiddlewareStack
-		DB              *DB
+		DB              *models.DB
 
 		ConfigFile string
 		Config     *Config
@@ -79,7 +80,13 @@ func (srv *Server) Setup() (err error) {
 			return
 		}
 	}
-	if srv.DB, err = NewDB(srv.Config); err != nil {
+	if srv.DB, err = models.NewDB(
+		srv.Config.Database.Username,
+		srv.Config.Database.Password,
+		srv.Config.Database.Host,
+		srv.Config.Database.Port,
+		srv.Config.Database.DbName,
+	); err != nil {
 		return
 	}
 	srv.MiddlewareStack = middlewares.NewMiddlewareStack(srv.DB)

@@ -1,7 +1,7 @@
-package gorestapi
+package gorpi
 
 import (
-	"github.com/gauravsarma1992/go-rest-api/gorestapi/routing"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/routing"
 )
 
 func (srv *Server) setRoutes() (err error) {

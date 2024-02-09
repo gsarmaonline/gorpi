@@ -1,8 +1,8 @@
 package api
 
 import (
+	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type (
@@ -11,7 +11,7 @@ type (
 		RequestURI    string
 		RequestMethod string
 
-		Db *gorm.DB
+		Db *models.DB
 	}
 	Response struct {
 		req        *Request

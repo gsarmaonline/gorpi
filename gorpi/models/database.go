@@ -1,4 +1,4 @@
-package gorestapi
+package models
 
 import (
 	"fmt"
@@ -13,13 +13,13 @@ type (
 	}
 )
 
-func NewDB(config *Config) (db *DB, err error) {
+func NewDB(username, password, host, port, dbName string) (db *DB, err error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		config.Database.Username,
-		config.Database.Password,
-		config.Database.Host,
-		config.Database.Port,
-		config.Database.DbName,
+		username,
+		password,
+		host,
+		port,
+		dbName,
 	)
 	orm, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 

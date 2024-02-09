@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/gauravsarma1992/go-rest-api/gorestapi"
-	"github.com/gauravsarma1992/go-rest-api/gorestapi/api"
-	"github.com/gauravsarma1992/go-rest-api/gorestapi/routing"
+	"github.com/gauravsarma1992/go-rest-api/gorpi"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/routing"
 	"github.com/gin-gonic/gin"
 )
 
@@ -82,12 +82,12 @@ func addDummyRoutes(rm *routing.RouteManager) {
 
 func main() {
 	var (
-		srv *gorestapi.Server
-		cfg *gorestapi.Config
+		srv *gorpi.Server
+		cfg *gorpi.Config
 		err error
 	)
 
-	cfg = &gorestapi.Config{}
+	cfg = &gorpi.Config{}
 
 	cfg.Server.Host = "127.0.0.1"
 	cfg.Server.Port = "8090"
@@ -97,7 +97,7 @@ func main() {
 	cfg.Database.Host = "127.0.0.1"
 	cfg.Database.Port = "3306"
 
-	if srv, err = gorestapi.New(cfg); err != nil {
+	if srv, err = gorpi.New(cfg); err != nil {
 		log.Println(err)
 		os.Exit(-1)
 	}

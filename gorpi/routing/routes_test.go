@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gauravsarma1992/go-rest-api/gorestapi/api"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )

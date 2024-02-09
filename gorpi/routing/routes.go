@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gauravsarma1992/go-rest-api/gorestapi/api"
-	"github.com/gauravsarma1992/go-rest-api/gorestapi/middlewares"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
