@@ -15,22 +15,31 @@ type (
 		Ancestor() ResourceModel
 	}
 
+	RestApiConfig struct {
+		ApiPrefix string `json:"api_prefix"`
+	}
+
 	RestApiManager struct {
 		server *gorpi.Server
+		config *RestApiConfig
 
 		ResourceRoutes []*ResourceRoute
 		defaultHandler *DefaultHandler
 	}
 )
 
-func NewRestApiManager(server *gorpi.Server) (rMgr *RestApiManager, err error) {
+func NewRestApiManager(server *gorpi.Server, config *RestApiConfig) (rMgr *RestApiManager, err error) {
 	if server == nil {
 		if server, err = gorpi.New(nil); err != nil {
 			return
 		}
 	}
+	if config == nil {
+		config = DefaultRestApiConfig()
+	}
 	rMgr = &RestApiManager{
 		server: server,
+		config: config,
 	}
 	if rMgr.defaultHandler, err = NewDefaultHandler(server); err != nil {
 		return
@@ -38,7 +47,15 @@ func NewRestApiManager(server *gorpi.Server) (rMgr *RestApiManager, err error) {
 	return
 }
 
+func DefaultRestApiConfig() (rConfig *RestApiConfig) {
+	rConfig = &RestApiConfig{
+		ApiPrefix: "/api",
+	}
+	return
+}
+
 func (rMgr *RestApiManager) AddResource(resRoute *ResourceRoute) (err error) {
+	resRoute.ApiPrefix += rMgr.config.ApiPrefix
 	rMgr.ResourceRoutes = append(rMgr.ResourceRoutes, resRoute)
 	return
 }

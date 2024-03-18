@@ -48,7 +48,7 @@ func TestMgrInit(t *testing.T) {
 	srv, err := gorpi.Default()
 	assert.Nil(t, err)
 
-	rMgr, err := NewRestApiManager(srv)
+	rMgr, err := NewRestApiManager(srv, nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, rMgr)
 
@@ -59,7 +59,7 @@ func TestMgrAddRoutes(t *testing.T) {
 
 	srv, _ := gorpi.Default()
 
-	rMgr, _ := NewRestApiManager(srv)
+	rMgr, _ := NewRestApiManager(srv, nil)
 
 	rRoute := &ResourceRoute{
 		ResourceModel: &ChildModel{},

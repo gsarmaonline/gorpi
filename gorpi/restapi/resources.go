@@ -18,6 +18,8 @@ type (
 	ResourceRoute struct {
 		ResourceModel ResourceModel
 		IgnoreApis    []ApiType
+		ApiPrefix     string
+		Version       string
 	}
 )
 
@@ -27,8 +29,8 @@ var (
 
 func (rRoute *ResourceRoute) GetApi() (api string) {
 	ancestor := rRoute.ResourceModel.Ancestor()
-	prefix := rRoute.GetAncestorPrefix(ancestor)
-	api = fmt.Sprintf("%s/%s", prefix, rRoute.ResourceModel.String())
+	ancestorPrefix := rRoute.GetAncestorPrefix(ancestor)
+	api = fmt.Sprintf("%s%s/%s", rRoute.ApiPrefix, ancestorPrefix, rRoute.ResourceModel.String())
 	return
 }
 
