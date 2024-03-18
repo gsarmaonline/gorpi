@@ -63,6 +63,7 @@ func TestMgrAddRoutes(t *testing.T) {
 
 	rRoute := &ResourceRoute{
 		ResourceModel: &ChildModel{},
+		Version:       "v1",
 	}
 	rMgr.AddResource(rRoute)
 	fmt.Println(rMgr.GenerateRoutes())

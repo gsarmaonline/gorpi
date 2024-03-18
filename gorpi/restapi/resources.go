@@ -24,12 +24,16 @@ type (
 )
 
 var (
+	// TODO: Check if useful, otherwise remove
 	DefaultApis = []ApiType{IndexApiType, CreateApiType, UpdateApiType, ShowApiType, DeleteApiType}
 )
 
 func (rRoute *ResourceRoute) GetApi() (api string) {
 	ancestor := rRoute.ResourceModel.Ancestor()
 	ancestorPrefix := rRoute.GetAncestorPrefix(ancestor)
+	if rRoute.Version != "" {
+		rRoute.ApiPrefix = fmt.Sprintf("%s/%s", rRoute.ApiPrefix, rRoute.Version)
+	}
 	api = fmt.Sprintf("%s%s/%s", rRoute.ApiPrefix, ancestorPrefix, rRoute.ResourceModel.String())
 	return
 }
@@ -39,34 +43,39 @@ func (rRoute *ResourceRoute) GetAncestorPrefix(ancestor ResourceModel) (prefix s
 		prefix = ""
 		return
 	}
-	prefix = fmt.Sprintf("%s/%s/:%s_id", rRoute.GetAncestorPrefix(ancestor.Ancestor()), ancestor.String(), ancestor.String())
+	prefix = fmt.Sprintf("%s/%s/:%s_id",
+		rRoute.GetAncestorPrefix(ancestor.Ancestor()),
+		ancestor.String(),
+		ancestor.String(),
+	)
 	return
 }
 
 func (rRoute *ResourceRoute) TranslateToRoutes(defaultHandler *DefaultHandler) (routes []*routing.Route, err error) {
+	apiPath := rRoute.GetApi()
 	routes = []*routing.Route{
 		{
-			RequestURI:    fmt.Sprintf("%s", rRoute.GetApi()),
+			RequestURI:    fmt.Sprintf("%s", apiPath),
 			RequestMethod: "GET",
 			Handler:       defaultHandler.IndexHandler,
 		},
 		{
-			RequestURI:    fmt.Sprintf("%s/:id", rRoute.GetApi()),
+			RequestURI:    fmt.Sprintf("%s/:id", apiPath),
 			RequestMethod: "GET",
 			Handler:       defaultHandler.ShowHandler,
 		},
 		{
-			RequestURI:    fmt.Sprintf("%s", rRoute.GetApi()),
+			RequestURI:    fmt.Sprintf("%s", apiPath),
 			RequestMethod: "POST",
 			Handler:       defaultHandler.CreateHandler,
 		},
 		{
-			RequestURI:    fmt.Sprintf("%s/:id", rRoute.GetApi()),
+			RequestURI:    fmt.Sprintf("%s/:id", apiPath),
 			RequestMethod: "PUT",
 			Handler:       defaultHandler.UpdateHandler,
 		},
 		{
-			RequestURI:    fmt.Sprintf("%s/:id", rRoute.GetApi()),
+			RequestURI:    fmt.Sprintf("%s/:id", apiPath),
 			RequestMethod: "DELETE",
 			Handler:       defaultHandler.DeleteHandler,
 		},
