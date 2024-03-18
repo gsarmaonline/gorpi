@@ -9,6 +9,8 @@ There are 2 approaches that we can take here.
 1. Provide a scaffolding based approach similar to Rails
 2. Provide a framework which pre-defines the functions common
 to the APIs.
+3. Provide common tools which autofills the common tasks and easy way to
+write new APIs.
 
 
 ### Observations
@@ -35,3 +37,9 @@ The above block should generate the following:
 - Routes for all the RESTful routes
 - API layer for the RESTful routes
 - DB action for the RESTful routes
+
+## Common tools
+
+- Extract request's unique ID
+- Pagination 
+- Database Operations

@@ -71,6 +71,25 @@ func New(config *Config) (srv *Server, err error) {
 	return
 }
 
+func Default() (srv *Server, err error) {
+	cfg := &Config{}
+
+	cfg.Server.Host = "127.0.0.1"
+	cfg.Server.Port = "8090"
+	cfg.Database.Username = "root"
+	cfg.Database.Password = ""
+	cfg.Database.DbName = "gorpi"
+	cfg.Database.Host = "127.0.0.1"
+
+	cfg.Database.Port = "3306"
+
+	if srv, err = New(cfg); err != nil {
+		log.Println(err)
+		os.Exit(-1)
+	}
+	return
+}
+
 func (srv *Server) Setup() (err error) {
 	if srv.ctx, srv.Cancel = context.WithCancel(context.Background()); err != nil {
 		return

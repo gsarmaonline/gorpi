@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func DummyHandler(req *api.Request) (resp *api.Response, err error) {
+func DummyHandler(req *api.Request, resp *api.Response) (err error) {
 	fmt.Println(req)
 	return
 }
