@@ -1,8 +1,6 @@
 package restapi
 
 import (
-	"log"
-
 	"github.com/gauravsarma1992/go-rest-api/gorpi"
 	"github.com/gauravsarma1992/go-rest-api/gorpi/routing"
 )
@@ -72,7 +70,6 @@ func (rMgr *RestApiManager) GenerateRoutes() (err error) {
 
 			}
 		}
-		log.Println("Generated routes from", rRoute, " : ", translatedRoutes)
 	}
 	return
 }
