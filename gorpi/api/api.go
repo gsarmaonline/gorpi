@@ -1,12 +1,15 @@
 package api
 
 import (
+	"context"
+
 	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
 	"github.com/gin-gonic/gin"
 )
 
 type (
 	Request struct {
+		Ctx           context.Context
 		GinC          *gin.Context
 		RequestURI    string
 		RequestMethod string
@@ -21,8 +24,9 @@ type (
 	ApiHandlerFunc func(*Request, *Response) error
 )
 
-func NewRequest(c *gin.Context) (req *Request) {
+func NewRequest(ctx context.Context, c *gin.Context) (req *Request) {
 	req = &Request{
+		Ctx:           ctx,
 		GinC:          c,
 		RequestURI:    c.Request.RequestURI,
 		RequestMethod: c.Request.Method,

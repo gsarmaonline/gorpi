@@ -49,7 +49,7 @@ func TestMiddlewareInit(t *testing.T) {
 
 	c := DummyContext()
 
-	err := ms.Exec(c, DummyHandler)
+	err := ms.Exec(nil, c, DummyHandler)
 	assert.Equal(t, err, nil)
 }
 
@@ -59,6 +59,6 @@ func TestMiddlewareInterruption(t *testing.T) {
 
 	c := DummyContext()
 
-	err := ms.Exec(c, DummyHandler)
+	err := ms.Exec(nil, c, DummyHandler)
 	assert.Equal(t, err, nil)
 }

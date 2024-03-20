@@ -2,7 +2,9 @@ package middlewares
 
 import (
 	"container/list"
-	"fmt"
+	"context"
+	"log"
+
 	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
 	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
 	"github.com/gin-gonic/gin"
@@ -35,14 +37,14 @@ func (ms *MiddlewareStack) Add(middleware Middleware) {
 	return
 }
 
-func (ms *MiddlewareStack) Exec(c *gin.Context, handler api.ApiHandlerFunc) (err error) {
+func (ms *MiddlewareStack) Exec(ctx context.Context, c *gin.Context, handler api.ApiHandlerFunc) (err error) {
 	var (
 		request  *api.Request
 		response *api.Response
 		tracker  *Tracker
 	)
 
-	request = api.NewRequest(c)
+	request = api.NewRequest(ctx, c)
 	response = api.NewResponse(request)
 
 	if ms.db != nil {
@@ -52,7 +54,7 @@ func (ms *MiddlewareStack) Exec(c *gin.Context, handler api.ApiHandlerFunc) (err
 	tracker = NewTracker(ms, request, response, handler)
 
 	if err = tracker.Start(); err != nil {
-		fmt.Println(err)
+		log.Println("Error in Middleware Tracker", err)
 		return
 	}
 	return

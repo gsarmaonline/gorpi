@@ -71,7 +71,7 @@ func New(config *Config) (srv *Server, err error) {
 	return
 }
 
-func Default() (srv *Server, err error) {
+func DefaultServer() (srv *Server, err error) {
 	cfg := &Config{}
 
 	cfg.Server.Host = "127.0.0.1"

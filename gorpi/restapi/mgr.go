@@ -8,11 +8,6 @@ import (
 type (
 	ApiType uint8
 
-	ResourceModel interface {
-		String() string
-		Ancestor() ResourceModel
-	}
-
 	RestApiConfig struct {
 		ApiPrefix string `json:"api_prefix"`
 	}
@@ -28,13 +23,15 @@ type (
 
 func NewRestApiManager(server *gorpi.Server, config *RestApiConfig) (rMgr *RestApiManager, err error) {
 	if server == nil {
-		if server, err = gorpi.New(nil); err != nil {
+		if server, err = gorpi.DefaultServer(); err != nil {
 			return
 		}
 	}
 	if config == nil {
 		config = DefaultRestApiConfig()
 	}
+	server.MiddlewareStack.Add(NewRestApiMiddleware())
+
 	rMgr = &RestApiManager{
 		server: server,
 		config: config,
@@ -75,6 +72,9 @@ func (rMgr *RestApiManager) GenerateRoutes() (err error) {
 }
 
 func (rMgr *RestApiManager) Run() (err error) {
+	if err = rMgr.GenerateRoutes(); err != nil {
+		return
+	}
 	err = rMgr.server.Run()
 	return
 }

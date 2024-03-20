@@ -9,7 +9,11 @@ import (
 
 type (
 	DB struct {
-		orm *gorm.DB
+		Orm *gorm.DB
+	}
+	ResourceModel interface {
+		String() string
+		Ancestor() ResourceModel
 	}
 )
 
@@ -24,7 +28,7 @@ func NewDB(username, password, host, port, dbName string) (db *DB, err error) {
 	orm, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	db = &DB{
-		orm: orm,
+		Orm: orm,
 	}
 	return
 }

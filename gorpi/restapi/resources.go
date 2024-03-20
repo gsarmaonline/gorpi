@@ -3,6 +3,7 @@ package restapi
 import (
 	"fmt"
 
+	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
 	"github.com/gauravsarma1992/go-rest-api/gorpi/routing"
 )
 
@@ -16,7 +17,7 @@ const (
 
 type (
 	ResourceRoute struct {
-		ResourceModel ResourceModel
+		ResourceModel models.ResourceModel
 		IgnoreApis    []ApiType
 		ApiPrefix     string
 		Version       string
@@ -38,7 +39,7 @@ func (rRoute *ResourceRoute) GetApi() (api string) {
 	return
 }
 
-func (rRoute *ResourceRoute) GetAncestorPrefix(ancestor ResourceModel) (prefix string) {
+func (rRoute *ResourceRoute) GetAncestorPrefix(ancestor models.ResourceModel) (prefix string) {
 	if ancestor == nil {
 		prefix = ""
 		return
@@ -58,26 +59,31 @@ func (rRoute *ResourceRoute) TranslateToRoutes(defaultHandler *DefaultHandler) (
 			RequestURI:    fmt.Sprintf("%s", apiPath),
 			RequestMethod: "GET",
 			Handler:       defaultHandler.IndexHandler,
+			ResourceModel: rRoute.ResourceModel,
 		},
 		{
 			RequestURI:    fmt.Sprintf("%s/:id", apiPath),
 			RequestMethod: "GET",
 			Handler:       defaultHandler.ShowHandler,
+			ResourceModel: rRoute.ResourceModel,
 		},
 		{
 			RequestURI:    fmt.Sprintf("%s", apiPath),
 			RequestMethod: "POST",
 			Handler:       defaultHandler.CreateHandler,
+			ResourceModel: rRoute.ResourceModel,
 		},
 		{
 			RequestURI:    fmt.Sprintf("%s/:id", apiPath),
 			RequestMethod: "PUT",
 			Handler:       defaultHandler.UpdateHandler,
+			ResourceModel: rRoute.ResourceModel,
 		},
 		{
 			RequestURI:    fmt.Sprintf("%s/:id", apiPath),
 			RequestMethod: "DELETE",
 			Handler:       defaultHandler.DeleteHandler,
+			ResourceModel: rRoute.ResourceModel,
 		},
 	}
 	return

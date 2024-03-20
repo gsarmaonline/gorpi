@@ -1,13 +1,19 @@
 package routing
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
 
 	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
 	"github.com/gauravsarma1992/go-rest-api/gorpi/middlewares"
+	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
 	"github.com/gin-gonic/gin"
+)
+
+const (
+	ContextRouteKey = "route"
 )
 
 type (
@@ -23,6 +29,7 @@ type (
 		RequestURI    string
 		RequestMethod string
 		Handler       api.ApiHandlerFunc
+		ResourceModel models.ResourceModel
 	}
 )
 
@@ -56,6 +63,7 @@ func (rm *RouteManager) RootHandler(c *gin.Context) {
 	var (
 		route *Route
 		err   error
+		ctx   context.Context
 	)
 
 	path := fmt.Sprintf("%s-%s", c.Request.Method, c.Request.RequestURI)
@@ -68,7 +76,14 @@ func (rm *RouteManager) RootHandler(c *gin.Context) {
 		return
 	}
 
-	rm.middlwareStack.Exec(c, route.Handler)
+	ctx = context.WithValue(context.Background(), ContextRouteKey, route)
+
+	if err = rm.middlwareStack.Exec(ctx, c, route.Handler); err != nil {
+		c.JSON(500, gin.H{
+			"request": path,
+			"message": "Handler errored - " + err.Error(),
+		})
+	}
 	return
 }
 
