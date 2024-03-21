@@ -1,6 +1,8 @@
 package restapi
 
 import (
+	"log"
+
 	"github.com/gauravsarma1992/go-rest-api/gorpi"
 	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
 	"github.com/gauravsarma1992/go-rest-api/gorpi/routing"
@@ -21,9 +23,16 @@ func NewDefaultHandler(server *gorpi.Server) (handler *DefaultHandler, err error
 }
 
 func (handler *DefaultHandler) IndexHandler(req *api.Request, resp *api.Response) (err error) {
+
 	reqModel := req.Ctx.Value("route").(*routing.Route).ResourceModel
-	req.Db.Orm.First(reqModel)
-	resp.Write(reqModel)
+	result := []map[string]interface{}{}
+
+	if db := req.Db.Orm.Table(reqModel.String()).Find(&result); db.Error != nil {
+		log.Println("Error in fetching resource for IndexHandler", err)
+		resp.WriteError(err)
+	}
+
+	resp.Write(result)
 	return
 }
 

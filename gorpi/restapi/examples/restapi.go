@@ -15,7 +15,7 @@ type (
 )
 
 func (dm *User) String() (name string) {
-	name = "user"
+	name = "users"
 	return
 }
 
@@ -32,7 +32,7 @@ func main() {
 		log.Fatal(err)
 	}
 	rRoute := &restapi.ResourceRoute{
-		ResourceModel: &User{"Gary"},
+		ResourceModel: &User{},
 		Version:       "v1",
 	}
 	mgr.AddResource(rRoute)

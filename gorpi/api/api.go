@@ -7,6 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	ResponseSuccessMessage = "success"
+)
+
 type (
 	Request struct {
 		Ctx           context.Context
@@ -43,7 +47,23 @@ func NewResponse(req *Request) (resp *Response) {
 
 func (resp *Response) Write(body interface{}) {
 	resp.req.GinC.JSON(200, gin.H{
-		"result": body,
+		"result":  body,
+		"message": ResponseSuccessMessage,
+	})
+	return
+}
+
+func (resp *Response) WriteJSON(body interface{}) {
+	resp.req.GinC.JSON(200, gin.H{
+		"result":  body,
+		"message": ResponseSuccessMessage,
+	})
+	return
+}
+
+func (resp *Response) WriteError(err error) {
+	resp.req.GinC.JSON(500, gin.H{
+		"message": err.Error(),
 	})
 	return
 }
