@@ -66,11 +66,20 @@ the `User` object.
 
 ## Gorpi Elements
 
-### Resources
+### Handlers
 
-In Rails, using `resources :model_one` creates the RESTful routes for the `model_one` resource and the
-required actions are then implemented with custom logic.
-Gorpi also uses the concept of `Resource` to leverage standard methods in the app.
+Handlers are similar to controllers in the MVC system.
+They connect the stateless nature of APIs with the objects in the system.
+
+```go
+type (
+    Handler struct {
+        DB *gorm.DB
+    }
+)
+```
+
+Handlers provide hooks into the request processing lifecycle.
 
 ### Routes
 
@@ -83,17 +92,51 @@ type (
 		RequestURI    string
 		RequestMethod string
 		Handler       api.ApiHandlerFunc
-		ResourceModel models.ResourceModel
 	}
 )
 ```
+
+### Resources
+
+In Rails, using `resources :model_one` creates the RESTful routes for the `model_one` resource and the
+required actions are then implemented with custom logic.
+Gorpi also uses the concept of `Resource` to leverage standard methods in the app.
 
 ## Integrating with Gorpi
 
 ### Defining routes without a Resource
 
-TBD
+Defining routes without a `Resource` is quite similar to any other framework and doesn't leverage a lot
+of the magic that goes behind defining a `resource`.
 
 ### Defining Resource
 
-TBD
+User will define the model and the RESTful routes they want to generate.
+It can be of the format:
+
+```go
+type (
+    Company struct {
+        Name string
+    }
+
+    User struct {
+        Name string
+        Age int
+    }
+)
+
+userApiConfig := RestApiConfig{
+    model: &User{},
+    ignoreApis: [api.CreateApi],
+    parent: &Company{}
+}
+
+restapi.GenerateAPI(userApiConfig)
+```
+
+The above block should generate the following:
+
+- Routes for all the RESTful routes
+- API layer for the RESTful routes
+- DB action for the RESTful routes
