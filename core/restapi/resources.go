@@ -3,8 +3,8 @@ package restapi
 import (
 	"fmt"
 
-	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
-	"github.com/gauravsarma1992/go-rest-api/gorpi/routing"
+	"github.com/gauravsarma1992/go-rest-api/core/models"
+	"github.com/gauravsarma1992/go-rest-api/core/routing"
 )
 
 const (
@@ -52,7 +52,7 @@ func (rRoute *ResourceRoute) GetAncestorPrefix(ancestor models.ResourceModel) (p
 	return
 }
 
-func (rRoute *ResourceRoute) TranslateToRoutes(defaultHandler *DefaultHandler) (routes []*routing.Route, err error) {
+func (rRoute *ResourceRoute) TranslateToRoutes(defaultHandler *BaseHandler) (routes []*routing.Route, err error) {
 	apiPath := rRoute.GetApi()
 	routes = []*routing.Route{
 		{

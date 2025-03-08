@@ -1,4 +1,4 @@
-package gorpi
+package core
 
 import (
 	"context"
@@ -12,9 +12,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/gauravsarma1992/go-rest-api/gorpi/middlewares"
-	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
-	"github.com/gauravsarma1992/go-rest-api/gorpi/routing"
+	"github.com/gauravsarma1992/go-rest-api/core/middlewares"
+	"github.com/gauravsarma1992/go-rest-api/core/models"
+	"github.com/gauravsarma1992/go-rest-api/core/routing"
 	"github.com/gin-gonic/gin"
 )
 
@@ -78,7 +78,7 @@ func DefaultServer() (srv *Server, err error) {
 	cfg.Server.Port = "8090"
 	cfg.Database.Username = "root"
 	cfg.Database.Password = ""
-	cfg.Database.DbName = "gorpi"
+	cfg.Database.DbName = "core"
 	cfg.Database.Host = "127.0.0.1"
 
 	cfg.Database.Port = "3306"

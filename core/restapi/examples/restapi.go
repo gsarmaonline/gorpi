@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
-	"github.com/gauravsarma1992/go-rest-api/gorpi/restapi"
+	"github.com/gauravsarma1992/go-rest-api/core/models"
+	"github.com/gauravsarma1992/go-rest-api/core/restapi"
 )
 
 type (

@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
+	"github.com/gauravsarma1992/go-rest-api/core/api"
 	"go.uber.org/zap"
 )
 

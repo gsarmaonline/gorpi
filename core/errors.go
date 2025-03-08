@@ -1,4 +1,4 @@
-package gorpi
+package core
 
 import (
 	"fmt"

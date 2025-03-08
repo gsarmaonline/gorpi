@@ -1,7 +1,7 @@
-package gorpi
+package core
 
 import (
-	"github.com/gauravsarma1992/go-rest-api/gorpi/routing"
+	"github.com/gauravsarma1992/go-rest-api/core/routing"
 )
 
 func (srv *Server) setRoutes() (err error) {

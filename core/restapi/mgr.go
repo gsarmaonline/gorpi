@@ -1,8 +1,8 @@
 package restapi
 
 import (
-	"github.com/gauravsarma1992/go-rest-api/gorpi"
-	"github.com/gauravsarma1992/go-rest-api/gorpi/routing"
+	"github.com/gauravsarma1992/go-rest-api/core"
+	"github.com/gauravsarma1992/go-rest-api/core/routing"
 )
 
 type (
@@ -13,17 +13,17 @@ type (
 	}
 
 	RestApiManager struct {
-		server *gorpi.Server
+		server *core.Server
 		config *RestApiConfig
 
 		ResourceRoutes []*ResourceRoute
-		defaultHandler *DefaultHandler
+		defaultHandler *BaseHandler
 	}
 )
 
-func NewRestApiManager(server *gorpi.Server, config *RestApiConfig) (rMgr *RestApiManager, err error) {
+func NewRestApiManager(server *core.Server, config *RestApiConfig) (rMgr *RestApiManager, err error) {
 	if server == nil {
-		if server, err = gorpi.DefaultServer(); err != nil {
+		if server, err = core.DefaultServer(); err != nil {
 			return
 		}
 	}
@@ -71,7 +71,19 @@ func (rMgr *RestApiManager) GenerateRoutes() (err error) {
 	return
 }
 
+func (rMgr *RestApiManager) GenerateModels() (err error) {
+	for _, rRoute := range rMgr.ResourceRoutes {
+		if err = rMgr.server.DB.Orm.AutoMigrate(rRoute.ResourceModel); err != nil {
+			return
+		}
+	}
+	return
+}
+
 func (rMgr *RestApiManager) Run() (err error) {
+	if err = rMgr.GenerateModels(); err != nil {
+		return
+	}
 	if err = rMgr.GenerateRoutes(); err != nil {
 		return
 	}

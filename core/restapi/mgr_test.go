@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gauravsarma1992/go-rest-api/gorpi"
-	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
+	"github.com/gauravsarma1992/go-rest-api/core"
+	"github.com/gauravsarma1992/go-rest-api/core/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -46,7 +46,7 @@ func (dm *ChildModel) Ancestor() (ancestor models.ResourceModel) {
 
 func TestMgrInit(t *testing.T) {
 
-	srv, err := gorpi.DefaultServer()
+	srv, err := core.DefaultServer()
 	assert.Nil(t, err)
 
 	rMgr, err := NewRestApiManager(srv, nil)
@@ -58,7 +58,7 @@ func TestMgrInit(t *testing.T) {
 
 func TestMgrAddRoutes(t *testing.T) {
 
-	srv, _ := gorpi.DefaultServer()
+	srv, _ := core.DefaultServer()
 
 	rMgr, _ := NewRestApiManager(srv, nil)
 

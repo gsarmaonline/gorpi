@@ -5,8 +5,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
-	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
+	"github.com/gauravsarma1992/go-rest-api/core/api"
+	"github.com/gauravsarma1992/go-rest-api/core/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,14 +37,15 @@ func (ms *MiddlewareStack) Add(middleware Middleware) {
 	return
 }
 
-func (ms *MiddlewareStack) Exec(ctx context.Context, c *gin.Context, handler api.ApiHandlerFunc) (err error) {
+func (ms *MiddlewareStack) Exec(ctx context.Context, c *gin.Context,
+	handler api.ApiHandlerFunc, params map[string]string) (err error) {
+
 	var (
 		request  *api.Request
 		response *api.Response
 		tracker  *Tracker
 	)
-
-	request = api.NewRequest(ctx, c)
+	request = api.NewRequest(ctx, c, params)
 	response = api.NewResponse(request)
 
 	if ms.db != nil {

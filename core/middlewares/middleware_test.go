@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
+	"github.com/gauravsarma1992/go-rest-api/core/api"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -49,7 +49,7 @@ func TestMiddlewareInit(t *testing.T) {
 
 	c := DummyContext()
 
-	err := ms.Exec(nil, c, DummyHandler)
+	err := ms.Exec(nil, c, DummyHandler, nil)
 	assert.Equal(t, err, nil)
 }
 
@@ -59,6 +59,6 @@ func TestMiddlewareInterruption(t *testing.T) {
 
 	c := DummyContext()
 
-	err := ms.Exec(nil, c, DummyHandler)
+	err := ms.Exec(nil, c, DummyHandler, nil)
 	assert.Equal(t, err, nil)
 }

@@ -2,13 +2,15 @@ package api
 
 import (
 	"context"
+	"log"
 
-	"github.com/gauravsarma1992/go-rest-api/gorpi/models"
+	"github.com/gauravsarma1992/go-rest-api/core/models"
 	"github.com/gin-gonic/gin"
 )
 
 const (
-	ResponseSuccessMessage = "success"
+	Debug     = true
+	PrimaryID = ":id"
 )
 
 type (
@@ -17,6 +19,8 @@ type (
 		GinC          *gin.Context
 		RequestURI    string
 		RequestMethod string
+
+		Params map[string]string
 
 		Db *models.DB
 	}
@@ -28,12 +32,13 @@ type (
 	ApiHandlerFunc func(*Request, *Response) error
 )
 
-func NewRequest(ctx context.Context, c *gin.Context) (req *Request) {
+func NewRequest(ctx context.Context, c *gin.Context, params map[string]string) (req *Request) {
 	req = &Request{
 		Ctx:           ctx,
 		GinC:          c,
 		RequestURI:    c.Request.RequestURI,
 		RequestMethod: c.Request.Method,
+		Params:        params,
 	}
 	return
 }
@@ -46,24 +51,22 @@ func NewResponse(req *Request) (resp *Response) {
 }
 
 func (resp *Response) Write(body interface{}) {
-	resp.req.GinC.JSON(200, gin.H{
-		"result":  body,
-		"message": ResponseSuccessMessage,
-	})
+	resp.WriteJSON(200, body)
 	return
 }
 
-func (resp *Response) WriteJSON(body interface{}) {
-	resp.req.GinC.JSON(200, gin.H{
-		"result":  body,
-		"message": ResponseSuccessMessage,
+func (resp *Response) WriteJSON(statusCode int, body interface{}) {
+	resp.req.GinC.JSON(statusCode, gin.H{
+		"result": body,
 	})
+
 	return
 }
 
 func (resp *Response) WriteError(err error) {
-	resp.req.GinC.JSON(500, gin.H{
-		"message": err.Error(),
-	})
+	if Debug {
+		log.Println("Error in request: ", resp.req.RequestURI, ". Failed with error ->", err)
+	}
+	resp.WriteJSON(500, err.Error())
 	return
 }

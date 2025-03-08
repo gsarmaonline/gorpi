@@ -3,8 +3,8 @@ package restapi
 import (
 	"log"
 
-	"github.com/gauravsarma1992/go-rest-api/gorpi/api"
-	"github.com/gauravsarma1992/go-rest-api/gorpi/middlewares"
+	"github.com/gauravsarma1992/go-rest-api/core/api"
+	"github.com/gauravsarma1992/go-rest-api/core/middlewares"
 )
 
 type (
@@ -18,7 +18,7 @@ func NewRestApiMiddleware() (rmM *RestApiMiddleware) {
 }
 
 func (rmM *RestApiMiddleware) Process(req *api.Request, resp *api.Response, tr *middlewares.Tracker) (err error) {
-	log.Println(req.Ctx.Value("route"))
+	log.Println("Processing request", req.Ctx.Value("route"))
 	tr.Next()
 	return
 }
